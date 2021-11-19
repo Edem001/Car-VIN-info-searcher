@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.CarInfoFragment"
+    android:transitionName="@string/main_to_info_transition">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/car_info_iv"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/surface_pad"
+                android:elevation="10dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_like_filled" />
+
+            <TextView
+                android:id="@+id/car_info_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="200dp"
+                android:layout_below="@+id/car_info_iv"
+                android:layout_centerHorizontal="true"
+                android:layout_marginHorizontal="20dp"
+                android:background="@drawable/surface_pad"
+                android:elevation="10dp"
+                android:padding="15dp"
+                android:textSize="24sp"
+                android:text="@string/lorem_ipsum"/>
+        </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

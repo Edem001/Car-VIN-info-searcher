@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:padding="15dp"
+    android:background="@drawable/surface_pad"
+    android:elevation="6dp"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <TextView
+        android:id="@+id/main_recycler_car_item_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="@string/item_header_placeholder"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        />
+
+    <TextView
+        android:id="@+id/main_recycler_car_item_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/main_recycler_car_item_header"
+        android:text="@string/lorem_ipsum"
+        android:textSize="16sp" />
+
+</RelativeLayout>
