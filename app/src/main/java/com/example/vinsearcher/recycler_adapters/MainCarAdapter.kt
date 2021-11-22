@@ -1,4 +1,4 @@
-package com.example.vinsearcher.RecyclerAdapters
+package com.example.vinsearcher.recycler_adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -19,7 +19,7 @@ class MainCarAdapter(
     }
 
     interface ItemClickCallback {
-        fun getItem(position: Int)
+        fun getItem(position: Int, view: View)
     }
 
     val layoutInflater = LayoutInflater.from(context)
@@ -31,7 +31,7 @@ class MainCarAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
-            itemClickCallback.getItem(position)
+            itemClickCallback.getItem(position, it)
         }
     }
 

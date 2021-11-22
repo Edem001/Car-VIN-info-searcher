@@ -1,4 +1,4 @@
-package com.example.vinsearcher.ViewModels
+package com.example.vinsearcher.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

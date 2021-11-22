@@ -4,10 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
     android:padding="15dp"
-    android:background="@drawable/surface_pad"
+    android:background="@drawable/surface_pad_ripple"
     android:elevation="6dp"
     android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipToPadding="false"
+    android:transitionName="@string/main_to_info_transition">
 
     <TextView
         android:id="@+id/main_recycler_car_item_header"

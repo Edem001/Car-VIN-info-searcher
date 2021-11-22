@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/favourite_menu_item"
-        android:title="@string/menu_item_liked"
+        android:title="@string/menu_item_history"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_like"
-        android:contentDescription="@string/menu_item_liked_description"
+        android:icon="@drawable/ic_time_icon"
+        android:contentDescription="@string/menu_item_history_description"
         />
 
 </menu>

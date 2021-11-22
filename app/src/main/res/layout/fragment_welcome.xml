@@ -12,17 +12,17 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/main_toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            app:title="@string/app_name"
-            app:menu="@menu/main_toolbar_menu"
-            app:layout_insetEdge="top"
             android:fitsSystemWindows="true"
+            app:layout_insetEdge="top"
+            app:menu="@menu/main_toolbar_menu"
 
-            android:id="@+id/main_toolbar"
-            />
+            app:title="@string/app_name" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/main_recycler"
