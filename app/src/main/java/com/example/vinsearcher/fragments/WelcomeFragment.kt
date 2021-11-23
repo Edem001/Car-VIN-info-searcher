@@ -1,5 +1,8 @@
 package com.example.vinsearcher.fragments
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,14 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.animation.addListener
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.FragmentContainer
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vinsearcher.MainActivity
 import com.example.vinsearcher.R
 import com.example.vinsearcher.recycler_adapters.MainCarAdapter
 import com.example.vinsearcher.viewmodels.MainActivityViewModel
+import com.google.android.material.animation.AnimatorSetCompat.playTogether
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class WelcomeFragment : Fragment() {
@@ -33,7 +42,9 @@ class WelcomeFragment : Fragment() {
 
         val toolBar = view.findViewById<MaterialToolbar>(R.id.main_toolbar)
         val recyclerView = view.findViewById<RecyclerView>(R.id.main_recycler)
-        val fab = view.findViewById<FloatingActionButton>(R.id.main_button_search)
+
+        val fragmentContainer =
+            view.findViewById<FragmentContainerView>(R.id.welcome_fragment_container)
 
         val onMenuClick = androidx.appcompat.widget.Toolbar.OnMenuItemClickListener { item ->
             val reduce = AnimationUtils.loadAnimation(requireContext(), R.anim.fade_out)
@@ -80,6 +91,7 @@ class WelcomeFragment : Fragment() {
                             R.anim.slide_out
                         )
                         replace(R.id.main_fragment_container, CarInfoFragment())
+                        (activity as MainActivity).simpleHideNavigation()
                         addToBackStack("main")
                     }
                 }
@@ -88,7 +100,6 @@ class WelcomeFragment : Fragment() {
         toolBar.setOnMenuItemClickListener(onMenuClick)
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
         return view
     }
 

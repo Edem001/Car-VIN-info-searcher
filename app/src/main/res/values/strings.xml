@@ -12,4 +12,6 @@
     <string name="card_title_placeholder">Card Title</string>
     <string name="card_description">card description</string>
     <string name="card_description_placeholder">Card Description</string>
+    <string name="edit_text_enter_vin">Enter car VIN here...</string>
+    <string name="search_button_text">Search</string>
 </resources>

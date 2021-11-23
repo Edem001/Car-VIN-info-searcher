@@ -31,22 +31,12 @@
             android:layout_below="@+id/main_toolbar" />
     </RelativeLayout>
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+
+
+    <androidx.fragment.app.FragmentContainerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-
-        android:id="@+id/app_bottom_bar"
-        app:hideOnScroll="true"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/main_button_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@+id/app_bottom_bar"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:srcCompat="@drawable/ic_search" />
+        android:layout_height="match_parent"
+        android:id="@+id/welcome_fragment_container"
+        android:visibility="gone"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

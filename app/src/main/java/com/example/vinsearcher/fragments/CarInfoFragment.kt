@@ -1,6 +1,7 @@
 package com.example.vinsearcher.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +11,20 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.vinsearcher.MainActivity
+import com.example.vinsearcher.MyApplication
 import com.example.vinsearcher.R
 import com.example.vinsearcher.viewmodels.CarInfoViewModel
 
 class CarInfoFragment : Fragment() {
 
     val viewModel: CarInfoViewModel = CarInfoViewModel()
+    private var hideBar = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        hideBar = arguments?.getBoolean("hideBottom") ?: false
+        Log.d("Debug", "${arguments?.getBoolean("hideBottom")}")
     }
 
     override fun onCreateView(
@@ -36,9 +41,15 @@ class CarInfoFragment : Fragment() {
             visibility = View.VISIBLE
         }
 
-
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, LinearLayout.VERTICAL)
 
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        if(!hideBar)
+            (activity as MainActivity).simpleShowNavigation()
     }
 }
