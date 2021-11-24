@@ -18,7 +18,7 @@ import java.util.*
 
 class CarInfoStaggeredRecyclerAdapter(
     private val context: Context,
-    val data: Hashtable<String, CarInfoUnit>
+    val data: HashMap<String, CarInfoUnit>
 ) : RecyclerView.Adapter<CarInfoStaggeredRecyclerAdapter.ViewHolder>() {
 
     val keys: MutableList<String> = data.keys.toMutableList()

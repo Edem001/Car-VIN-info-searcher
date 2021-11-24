@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.animation.addListener
@@ -21,12 +22,15 @@ import javax.inject.Inject
 import javax.inject.Named
 
 import android.util.TypedValue
+import android.widget.Toast
 import androidx.annotation.ColorInt
+import kotlinx.coroutines.runBlocking
 
 
 class MainActivity : AppCompatActivity() {
 
-    val viewModel = MainActivityViewModel()
+    @Inject
+    lateinit var viewModel: MainActivityViewModel
 
     @Inject
     @Named("Car info")
@@ -35,16 +39,28 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        (application as MyApplication).appComponent.inject(this)
 
         val duplicateFab = findViewById<FloatingActionButton>(R.id.main_button_search_duplicate)
         val fab = findViewById<FloatingActionButton>(R.id.main_button_search)
         val bottomAppBar = findViewById<BottomAppBar>(R.id.app_bottom_bar)
         val fragmentContainer = findViewById<FragmentContainerView>(R.id.main_fragment_container)
 
-
         fab.setOnClickListener {
             hideNavigation()
         }
+
+        viewModel.errorObservable.observe(this, {
+            var message = ""
+            when {
+                it == 404 -> message = "Error: not found"
+                it > 500 -> message = "Serverside error, please wait"
+                it in 0..399 -> return@observe
+                else -> message = "Unknown error, code ${it}"
+            }
+
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        })
     }
 
     fun hideNavigation() {
@@ -80,7 +96,13 @@ class MainActivity : AppCompatActivity() {
                 bottomAppBar.performHide()
                 fab.visibility = View.GONE
                 supportFragmentManager.commit {
-                    replace(R.id.main_fragment_container, SearchFragment())
+                    replace(R.id.main_fragment_container, SearchFragment(
+                        object : SearchFragment.SearchCallback {
+                            override fun searchQuery(query: String) {
+                                viewModel.query(query)
+                            }
+                        }
+                    ))
                     addToBackStack("welcome")
                 }
                 window.statusBarColor = statusBarColor
@@ -91,8 +113,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun simpleHideNavigation() {
-        findViewById<BottomAppBar>(R.id.app_bottom_bar).performHide()
+        findViewById<BottomAppBar>(R.id.app_bottom_bar).apply {
+            performHide()
+            hideOnScroll = false
+        }
         findViewById<FloatingActionButton>(R.id.main_button_search).hide()
+
     }
 
     fun showNavigation() {
@@ -134,9 +160,16 @@ class MainActivity : AppCompatActivity() {
         animation.start()
     }
 
-    fun simpleShowNavigation(){
+    fun simpleShowNavigation() {
         findViewById<FloatingActionButton>(R.id.main_button_search).show()
-        findViewById<BottomAppBar>(R.id.app_bottom_bar).performShow()
+        findViewById<BottomAppBar>(R.id.app_bottom_bar).apply {
+            performShow()
+            hideOnScroll = true
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
 

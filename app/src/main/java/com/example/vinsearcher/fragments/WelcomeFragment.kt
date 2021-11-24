@@ -15,23 +15,29 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vinsearcher.MainActivity
+import com.example.vinsearcher.MyApplication
 import com.example.vinsearcher.R
+import com.example.vinsearcher.network.models.VehicleModel
 import com.example.vinsearcher.recycler_adapters.MainCarAdapter
 import com.example.vinsearcher.viewmodels.MainActivityViewModel
 import com.google.android.material.animation.AnimatorSetCompat.playTogether
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import javax.inject.Inject
 
 class WelcomeFragment : Fragment() {
 
-    val viewModel = MainActivityViewModel()
+    @Inject
+    lateinit var viewModel: MainActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (activity?.application as MyApplication).appComponent.inject(this)
     }
 
     override fun onCreateView(
@@ -80,9 +86,10 @@ class WelcomeFragment : Fragment() {
 
         val recyclerAdapter = MainCarAdapter(
             requireContext(),
-            listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10),
+            listOf(),
+            null,
             object : MainCarAdapter.ItemClickCallback {
-                override fun getItem(position: Int, innerView: View) {
+                override fun getItem(vehicleModel: VehicleModel?) {
                     parentFragmentManager.commit {
                         setCustomAnimations(
                             R.anim.slide_in,
@@ -90,7 +97,7 @@ class WelcomeFragment : Fragment() {
                             android.R.anim.fade_in,
                             R.anim.slide_out
                         )
-                        replace(R.id.main_fragment_container, CarInfoFragment())
+                        replace(R.id.main_fragment_container, CarInfoFragment(vehicleModel))
                         (activity as MainActivity).simpleHideNavigation()
                         addToBackStack("main")
                     }
@@ -100,6 +107,15 @@ class WelcomeFragment : Fragment() {
         toolBar.setOnMenuItemClickListener(onMenuClick)
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val observer = Observer<ArrayList<String>> {
+            recyclerAdapter.dataListKeys = it
+            recyclerAdapter.dataList = viewModel.searchHistory.value
+            recyclerAdapter.notifyDataSetChanged()
+        }
+
+        viewModel.queryOrder.observe(viewLifecycleOwner, observer)
+
         return view
     }
 
