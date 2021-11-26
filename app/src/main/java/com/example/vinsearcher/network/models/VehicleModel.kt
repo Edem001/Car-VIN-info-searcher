@@ -10,15 +10,15 @@ data class VehicleModel(
     @SerializedName("Results") val results: List<VehicleResultsItemModel>
 ) {
     fun getBriefDescription(): String {
-        val items = results.filter { it.variable in listOf("Manufacturer Name", "Model") }
-        return "Manufacturer: ${
-            items.filter { it.variable == "Manufacturer Name" }.get(0).value ?: "Not found"
+        val items = results.filter { it.variable in listOf("Make", "Model") }
+        return "Make: ${
+            items.filter { it.variable == "Make" }.get(0).value ?: "Not found"
         }\n" +
                 "Model: ${items.filter { it.variable == "Model" }.get(0).value ?: "Not found"}"
     }
 
     fun isValid(): Boolean {
-        results.filter { it.variable in listOf("Manufacturer Name", "Model") }
+        results.filter { it.variable in listOf("Make", "Model") }
             .filterNot { it.value == null }
             .ifEmpty { return false }
 

@@ -1,6 +1,8 @@
 package com.example.vinsearcher.recycler_adapters
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,11 +30,11 @@ class CarInfoStaggeredRecyclerAdapter(
         val title = view.findViewById<TextView>(R.id.car_info_title)
         val image = view.findViewById<ImageView>(R.id.car_info_image)
         val description = view.findViewById<TextView>(R.id.car_info_description)
-        val progressBar = view.findViewById<ProgressBar>(R.id.car_info_progress_bar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.fragment_car_info_item, parent, false)
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.fragment_car_info_item, parent, false)
 
         return ViewHolder(view)
     }
@@ -40,53 +42,17 @@ class CarInfoStaggeredRecyclerAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.animation =
             AnimationUtils.loadAnimation(context, R.anim.scale_from_0_to_100)
-        val currentInfoUnit: CarInfoUnit?
-        val imageLoadingCallback = object : Callback {
-            override fun onSuccess() {
-                holder.progressBar.visibility = View.GONE
-            }
 
-            override fun onError(e: Exception?) {
 
-            }
-        }
+        var currentInfoUnit: CarInfoUnit? = data[keys[position]]
 
-        if (position == 0 && keys.contains("car_image")) {
+        if (currentInfoUnit?.title != null)
+            holder.title.text = currentInfoUnit.title
+        else holder.title.visibility = View.GONE
+        if (currentInfoUnit?.description != null)
+            holder.description.text = currentInfoUnit.description
 
-            val imagePosition = keys.indexOf("car_image")
-            val tempData = keys[0]
-            keys[0] = keys[imagePosition]
-            keys[imagePosition] = tempData
-
-            currentInfoUnit = data[keys[position]]
-            holder.title.visibility = View.GONE
-            holder.description.visibility = View.GONE
-            holder.image.visibility = View.VISIBLE
-            holder.progressBar.visibility = View.VISIBLE
-
-            Picasso.get()
-                .load(currentInfoUnit?.imageURL)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_like_filled)
-                .into(holder.image, imageLoadingCallback)
-            return
-        }
-
-        currentInfoUnit = data[keys[position]]
-        if (currentInfoUnit?.imageURL != null){
-            holder.image.visibility = View.VISIBLE
-            holder.progressBar.visibility = View.VISIBLE
-
-            Picasso.get()
-                .load(currentInfoUnit.imageURL)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_like_filled)
-                .into(holder.image, imageLoadingCallback)
-        }
-
-        holder.title.text = currentInfoUnit?.title
-        holder.description.text = currentInfoUnit?.description
     }
 
-    override fun getItemCount() = data.size
+    override fun getItemCount() = keys.size
 }

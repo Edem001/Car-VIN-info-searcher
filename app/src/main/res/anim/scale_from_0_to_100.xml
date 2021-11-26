@@ -7,6 +7,9 @@
         android:toYScale="100%"
         android:toXScale="100%"
 
+        android:pivotY="0.5"
+        android:pivotX="0.5"
+
         android:duration="@android:integer/config_shortAnimTime"
         android:interpolator="@android:interpolator/decelerate_cubic"/>
 </set>

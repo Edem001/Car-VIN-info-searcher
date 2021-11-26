@@ -88,8 +88,9 @@ class WelcomeFragment : Fragment() {
             requireContext(),
             listOf(),
             null,
+            listOf(),
             object : MainCarAdapter.ItemClickCallback {
-                override fun getItem(vehicleModel: VehicleModel?) {
+                override fun getItem(vehicleModel: VehicleModel?, imageURL: String?) {
                     parentFragmentManager.commit {
                         setCustomAnimations(
                             R.anim.slide_in,
@@ -97,7 +98,7 @@ class WelcomeFragment : Fragment() {
                             android.R.anim.fade_in,
                             R.anim.slide_out
                         )
-                        replace(R.id.main_fragment_container, CarInfoFragment(vehicleModel))
+                        replace(R.id.main_fragment_container, CarInfoFragment(vehicleModel, imageURL))
                         (activity as MainActivity).simpleHideNavigation()
                         addToBackStack("main")
                     }
@@ -108,13 +109,19 @@ class WelcomeFragment : Fragment() {
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val observer = Observer<ArrayList<String>> {
+        val observer = Observer<List<String>> {
             recyclerAdapter.dataListKeys = it
             recyclerAdapter.dataList = viewModel.searchHistory.value
+            recyclerAdapter.urlList = viewModel.imageURLList.value
             recyclerAdapter.notifyDataSetChanged()
         }
 
         viewModel.queryOrder.observe(viewLifecycleOwner, observer)
+        viewModel.imageURLList.observe(viewLifecycleOwner, {
+            if(recyclerAdapter.urlList?.size == it.size){
+                recyclerAdapter.notifyDataSetChanged()
+            }
+        })
 
         return view
     }

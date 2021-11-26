@@ -2,7 +2,9 @@ package com.example.vinsearcher.di
 
 import android.content.Context
 import com.example.vinsearcher.MainActivity
+import com.example.vinsearcher.fragments.CarInfoFragment
 import com.example.vinsearcher.fragments.WelcomeFragment
+import com.example.vinsearcher.network.CarImage
 import com.example.vinsearcher.network.CarInfoModule
 import com.example.vinsearcher.viewmodels.MainActivityViewModel
 import com.google.gson.GsonBuilder
@@ -26,6 +28,7 @@ interface AppComponent {
 
     fun inject(activity: MainActivity)
     fun inject(fragment: WelcomeFragment)
+    fun inject(fragment: CarInfoFragment)
 }
 
 @Module
@@ -44,6 +47,17 @@ class WebClient {
     }
 
     @Singleton
+    @Named("Image search")
     @Provides
-    fun provideMainViewModel(@Named("Car info") client: CarInfoModule):MainActivityViewModel = MainActivityViewModel(client)
+    fun getImageURL():CarImage {
+        return Retrofit.Builder()
+            .baseUrl("https://imsea.herokuapp.com/api/")
+            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
+            .build()
+            .create(CarImage::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMainViewModel(@Named("Car info") client: CarInfoModule, @Named("Image search") image: CarImage):MainActivityViewModel = MainActivityViewModel(client, image)
 }
