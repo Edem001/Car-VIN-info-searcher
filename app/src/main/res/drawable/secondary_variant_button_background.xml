@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:colorPressedHighlight">
+    <item>
+        <selector>
+            <item
+                android:drawable="@drawable/color_secondary_variant_rounded"
+                android:state_checked="false" />
+            <item
+                android:drawable="@drawable/color_secondary_variant_darkened_rounded"
+                android:state_checked="true" />
+            <item android:drawable="@drawable/color_secondary_variant_rounded" />
+        </selector>
+    </item>
+</ripple>
