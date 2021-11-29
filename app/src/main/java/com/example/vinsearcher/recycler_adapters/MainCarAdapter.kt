@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -26,11 +27,12 @@ class MainCarAdapter(
         val title = view.findViewById<TextView>(R.id.main_recycler_car_item_header)
         val content = view.findViewById<TextView>(R.id.main_recycler_car_item_content)
         val progress = view.findViewById<ProgressBar>(R.id.main_recycler_progress)
-        val successImage = view.findViewById<ImageView>(R.id.main_recycler_iv_success)
+        val deleteButton = view.findViewById<Button>(R.id.main_recycler_car_item_delete_button)
     }
 
     interface ItemClickCallback {
         fun getItem(vehicleModel: VehicleModel?, imageURL: String?)
+        fun onDeleteItem(vehicleModel: VehicleModel?, index: Int)
     }
 
     val layoutInflater = LayoutInflater.from(context)
@@ -63,6 +65,10 @@ class MainCarAdapter(
                     null -> "https://http.cat/404"
                 }
             )
+        }
+
+        holder.deleteButton.setOnClickListener {
+            itemClickCallback.onDeleteItem(dataList?.get(dataListKeys[size - position - 1]), size - position - 1)
         }
     }
 

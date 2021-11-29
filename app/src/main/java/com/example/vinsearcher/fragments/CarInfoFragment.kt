@@ -110,7 +110,7 @@ class CarInfoFragment(val vehicleModel: VehicleModel?, val carImageURL: String?)
     }
 
 
-    suspend fun setImageHolder(imageHolder: ImageView, url: String) {
+    private suspend fun setImageHolder(imageHolder: ImageView, url: String) {
         withContext(Dispatchers.Main) {
             val imageLoadingCallback = object : Callback {
                 override fun onSuccess() {

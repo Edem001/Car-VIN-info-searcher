@@ -97,7 +97,7 @@ class SearchFragment(val callback: SearchCallback) : Fragment() {
         val fragmentManager = parentFragmentManager
 
         if (editText.text.toString().isNotEmpty()) {
-            callback.searchQuery(editText.text.toString())
+            callback.searchQuery(editText.text.toString().filterNot { it.isWhitespace() })
             fragmentManager.popBackStack()
         }
 

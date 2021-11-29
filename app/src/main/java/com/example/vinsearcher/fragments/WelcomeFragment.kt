@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,17 +24,24 @@ import com.example.vinsearcher.MyApplication
 import com.example.vinsearcher.R
 import com.example.vinsearcher.network.models.VehicleModel
 import com.example.vinsearcher.recycler_adapters.MainCarAdapter
+import com.example.vinsearcher.room.CarDatabase
 import com.example.vinsearcher.viewmodels.MainActivityViewModel
 import com.google.android.material.animation.AnimatorSetCompat.playTogether
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WelcomeFragment : Fragment() {
 
     @Inject
     lateinit var viewModel: MainActivityViewModel
+
+    @Inject
+    lateinit var room: CarDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,10 +106,40 @@ class WelcomeFragment : Fragment() {
                             android.R.anim.fade_in,
                             R.anim.slide_out
                         )
-                        replace(R.id.main_fragment_container, CarInfoFragment(vehicleModel, imageURL))
+                        replace(
+                            R.id.main_fragment_container,
+                            CarInfoFragment(vehicleModel, imageURL)
+                        )
                         (activity as MainActivity).simpleHideNavigation()
                         addToBackStack("main")
                     }
+                }
+
+                override fun onDeleteItem(vehicleModel: VehicleModel?, index: Int) {
+                    if (vehicleModel != null){
+                        val vin = vehicleModel.searchCriteria.replace("VIN:", "")
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                room.carDAO().deleteByVIN(vin)
+                            }catch (e: Exception){
+                                Log.e("Database", e.message.toString())
+                                e.printStackTrace()
+                            }
+                        }
+
+                        val queries = viewModel.queryOrder.value
+                        val data = viewModel.searchHistory.value
+                        val urls = viewModel.imageURLList.value
+
+                        urls?.removeAt(index)
+                        data?.remove(vin)
+                        queries?.removeAt(index)
+
+                        viewModel.searchHistory.postValue(data)
+                        viewModel.imageURLList.postValue(urls)
+                        viewModel.queryOrder.postValue(queries)
+                    }
+
                 }
             })
 
@@ -118,7 +156,7 @@ class WelcomeFragment : Fragment() {
 
         viewModel.queryOrder.observe(viewLifecycleOwner, observer)
         viewModel.imageURLList.observe(viewLifecycleOwner, {
-            if(recyclerAdapter.urlList?.size == it.size){
+            if (recyclerAdapter.urlList?.size == it.size) {
                 recyclerAdapter.notifyDataSetChanged()
             }
         })

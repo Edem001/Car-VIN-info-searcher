@@ -24,6 +24,11 @@ import javax.inject.Named
 import android.util.TypedValue
 import android.widget.Toast
 import androidx.annotation.ColorInt
+import androidx.room.Room
+import com.example.vinsearcher.room.CarDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 
@@ -33,6 +38,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var viewModel: MainActivityViewModel
 
     @Inject
+    lateinit var room: CarDatabase
+
+    @Inject
     @Named("Car info")
     lateinit var carInfoClient: CarInfoModule
 
@@ -40,6 +48,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         (application as MyApplication).appComponent.inject(this)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                viewModel.parseRoomList(room.carDAO().loadAllEntries())
+            }catch (e: Exception){
+                Log.e("Database", e.message.toString())
+                e.printStackTrace()
+            }
+        }
 
         val duplicateFab = findViewById<FloatingActionButton>(R.id.main_button_search_duplicate)
         val fab = findViewById<FloatingActionButton>(R.id.main_button_search)
@@ -170,6 +187,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        val carDao = room.carDAO()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                carDao.insertAllEntries(viewModel.toRoomList())
+            }catch (e: Exception){
+                Log.e("Database", e.message.toString())
+                e.printStackTrace()
+            }
+        }
     }
 }
 
