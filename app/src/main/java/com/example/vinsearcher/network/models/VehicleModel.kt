@@ -24,4 +24,14 @@ data class VehicleModel(
 
         return true
     }
+
+    fun getImageQuery() =
+        results.filter {
+            it.variable in listOf(
+                "Make",
+                "Model",
+                "Model Year",
+                "Series"
+            )
+        }.joinToString { "${it.value} " }
 }

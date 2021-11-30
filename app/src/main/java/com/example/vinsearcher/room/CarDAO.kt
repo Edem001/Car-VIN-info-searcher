@@ -14,4 +14,7 @@ interface CarDAO {
 
     @Query(value = "DELETE FROM VinEntry WHERE vin = :VIN")
     fun deleteByVIN(VIN : String)
+
+    @Query(value = "DELETE FROM VinEntry")
+    fun clearTable()
 }

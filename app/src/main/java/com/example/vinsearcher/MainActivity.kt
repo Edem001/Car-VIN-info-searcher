@@ -191,6 +191,7 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                carDao.clearTable()
                 carDao.insertAllEntries(viewModel.toRoomList())
             }catch (e: Exception){
                 Log.e("Database", e.message.toString())

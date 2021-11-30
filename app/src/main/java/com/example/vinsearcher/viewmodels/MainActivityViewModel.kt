@@ -42,16 +42,10 @@ class MainActivityViewModel @Inject constructor(
                         val make = vehicleModel.results.find { it.variable == "Make" }?.value
                         val model = vehicleModel.results.find { it.variable == "Model" }?.value
 
-                        var imageSearchQuery: String? = null
-                        let {
-                            imageSearchQuery =
-                                "$make $model ${vehicleModel.results.find { it.variable == "Series" }?.value ?: ""} ${vehicleModel.results.find { it.variable == "Model Year" }?.value ?: ""}"
-                        }
-
+                        val imageSearchQuery = vehicleModel.getImageQuery()
                         var result: String? = null
                         try {
-                            if (imageSearchQuery != null)
-                                result = imageClient.getImage(imageSearchQuery!!).results[0]
+                            result = imageClient.getImage(imageSearchQuery).results[0]
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -63,8 +57,7 @@ class MainActivityViewModel @Inject constructor(
 
                 } catch (t: HttpException) {
                     errorObservable.postValue(t.code())
-                }
-                catch (e: Exception){
+                } catch (e: Exception) {
                     Log.e("Network", e.message.toString())
                     e.printStackTrace()
                 }
@@ -83,8 +76,16 @@ class MainActivityViewModel @Inject constructor(
 
     fun toRoomList(): List<VinEntry> {
         val list = ArrayList<VinEntry>()
+        var offset = 0
+
+        if(queryOrder.value != null && queryOrder.value!!.size > 20){
+            offset = queryOrder.value!!.size - 20
+        }
 
         queryOrder.value?.forEachIndexed { index, s ->
+            if (offset > 0 && index < offset)
+                return@forEachIndexed
+
             list.add(
                 VinEntry(
                     s,
@@ -121,15 +122,12 @@ class MainActivityViewModel @Inject constructor(
         urls.forEachIndexed { index, it ->
             if (it.first == null) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    urls[index] = Pair(imageClient.getImage(vehicles[queries[index]]?.results
-                        ?.filter {
-                        it.variable in listOf(
-                            "Make",
-                            "Model",
-                            "Model Year",
-                            "Series"
-                        )
-                    }?.joinToString { "${it.value} " } ?: "https://http.cat/404").results[0], true).also { imageURLList.postValue(urls) }
+                    urls[index] = Pair(
+                        imageClient.getImage(
+                            vehicles[queries[index]]
+                                ?.getImageQuery() ?: "https://http.cat/404"
+                        ).results[0], true
+                    ).also { imageURLList.postValue(urls) }
                 }
             }
         }
