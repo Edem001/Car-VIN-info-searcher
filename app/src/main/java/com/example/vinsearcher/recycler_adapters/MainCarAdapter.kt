@@ -70,12 +70,8 @@ class MainCarAdapter(
         }
 
         holder.deleteButton.setOnClickListener {
-            val oldData = dataListKeys.toList()
-            dataListKeys = dataListKeys.toMutableList().apply { removeAt(size - position - 1) }
-            notifyItemRemoved(position)
-
             itemClickCallback.onDeleteItem(
-                dataList?.get(oldData[size - position - 1]),
+                dataList?.get(dataListKeys[size - position - 1]),
                 size - position - 1
             )
         }

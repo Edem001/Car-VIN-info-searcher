@@ -122,13 +122,17 @@ class WelcomeFragment : Fragment() {
                             }
                         }
 
-                        val queries = viewModel.queryOrder.value
-                        val data = viewModel.searchHistory.value
-                        val urls = viewModel.imageURLList.value
+                        val queries = viewModel.queryOrder.value?.toMutableList()
+                        val data = viewModel.searchHistory.value?.toMutableMap()
+                        val urls = viewModel.imageURLList.value?.toMutableList()
 
                         urls?.removeAt(index)
                         data?.remove(vin)
                         queries?.removeAt(index)
+
+                        viewModel.searchHistory.postValue(data as HashMap<String, VehicleModel>?)
+                        viewModel.imageURLList.postValue(urls as ArrayList<Pair<String?, Boolean>>?)
+                        viewModel.queryOrder.postValue(queries as ArrayList<String>?)
                     }
 
                 }
@@ -138,33 +142,29 @@ class WelcomeFragment : Fragment() {
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val viewObserver = view.viewTreeObserver
-        viewObserver.addOnGlobalLayoutListener (object : ViewTreeObserver.OnGlobalLayoutListener{
-            override fun onGlobalLayout() {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                val observer = Observer<List<String>> {
-                    recyclerAdapter.urlList = viewModel.imageURLList.value
-                    recyclerAdapter.dataList = viewModel.searchHistory.value
+        val observer = Observer<List<String>> {
+            recyclerAdapter.urlList = viewModel.imageURLList.value
+            recyclerAdapter.dataList = viewModel.searchHistory.value
 
-                    val diff = StringListDiffCallback(viewModel.queryOrderOld.reversed(), it.reversed())
-                    val result = DiffUtil.calculateDiff(diff)
+            val diff = StringListDiffCallback(viewModel.queryOrderOld.reversed(), it.reversed())
+            val result = DiffUtil.calculateDiff(diff)
 
-                    recyclerAdapter.dataListKeys = it
-                    result.dispatchUpdatesTo(recyclerAdapter)
+            recyclerAdapter.dataListKeys = it
+            result.dispatchUpdatesTo(recyclerAdapter)
 
-                    if(viewModel.queryOrderOld.size != it.size)
-                        viewModel.queryOrderOld = it.toList()
-                }
+            if (viewModel.queryOrderOld.size != it.size)
+                viewModel.queryOrderOld = it.toList()
+        }
 
-                viewModel.queryOrder.observe(viewLifecycleOwner, observer)
-                viewModel.loadedIndex.observe(viewLifecycleOwner, {
-                    if (it >= 0 && recyclerAdapter.itemCount > 0)
-                        recyclerAdapter.notifyItemChanged(recyclerAdapter.itemCount - it - 1)
-                    else recyclerAdapter.notifyDataSetChanged()
-                })
-            }
+        viewModel.queryOrder.observe(viewLifecycleOwner, observer)
+        viewModel.loadedIndex.observe(viewLifecycleOwner, {
+            if (it >= 0 && recyclerAdapter.itemCount > 0)
+                recyclerAdapter.notifyItemChanged(recyclerAdapter.itemCount - it - 1)
+            else recyclerAdapter.notifyDataSetChanged()
         })
+
+
 
         return view
     }
