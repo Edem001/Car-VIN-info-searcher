@@ -10,14 +10,16 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.postOnAnimationDelayed
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vinsearcher.R
 import com.example.vinsearcher.network.models.VehicleModel
+import com.example.vinsearcher.util.StringListDiffCallback
 import com.example.vinsearcher.util.gone
 import com.example.vinsearcher.util.visible
 
 class MainCarAdapter(
-    context: Context,
+    val context: Context,
     var dataListKeys: List<String>,
     var dataList: HashMap<String, VehicleModel>?,
     var urlList: List<Pair<String?, Boolean>>?,
@@ -68,7 +70,14 @@ class MainCarAdapter(
         }
 
         holder.deleteButton.setOnClickListener {
-            itemClickCallback.onDeleteItem(dataList?.get(dataListKeys[size - position - 1]), size - position - 1)
+            val oldData = dataListKeys.toList()
+            dataListKeys = dataListKeys.toMutableList().apply { removeAt(size - position - 1) }
+            notifyItemRemoved(position)
+
+            itemClickCallback.onDeleteItem(
+                dataList?.get(oldData[size - position - 1]),
+                size - position - 1
+            )
         }
     }
 

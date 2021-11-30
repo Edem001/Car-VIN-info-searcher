@@ -52,7 +52,9 @@ class MainActivityViewModel @Inject constructor(
 
                         imageList.removeLast()
                         imageList.add(Pair(result, true))
+                        val newIndex = imageList.indexOf(Pair(result, true))
                         imageURLList.postValue(imageList)
+                        loadedIndex.postValue(newIndex)
                     }
 
                 } catch (t: HttpException) {
@@ -72,6 +74,8 @@ class MainActivityViewModel @Inject constructor(
     val errorObservable = MutableLiveData(0)
 
     val likedButtonState = MutableLiveData(false)
+    var queryOrderOld: List<String> = ArrayList()
+    var loadedIndex = MutableLiveData<Int>()
 
 
     fun toRoomList(): List<VinEntry> {

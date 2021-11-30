@@ -1,8 +1,5 @@
 package com.example.vinsearcher.fragments
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,13 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.animation.AnimationUtils
-import androidx.core.animation.addListener
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.FragmentContainer
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vinsearcher.MainActivity
@@ -25,11 +22,9 @@ import com.example.vinsearcher.R
 import com.example.vinsearcher.network.models.VehicleModel
 import com.example.vinsearcher.recycler_adapters.MainCarAdapter
 import com.example.vinsearcher.room.CarDatabase
+import com.example.vinsearcher.util.StringListDiffCallback
 import com.example.vinsearcher.viewmodels.MainActivityViewModel
-import com.google.android.material.animation.AnimatorSetCompat.playTogether
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -116,12 +111,12 @@ class WelcomeFragment : Fragment() {
                 }
 
                 override fun onDeleteItem(vehicleModel: VehicleModel?, index: Int) {
-                    if (vehicleModel != null){
+                    if (vehicleModel != null) {
                         val vin = vehicleModel.searchCriteria.replace("VIN:", "")
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 room.carDAO().deleteByVIN(vin)
-                            }catch (e: Exception){
+                            } catch (e: Exception) {
                                 Log.e("Database", e.message.toString())
                                 e.printStackTrace()
                             }
@@ -134,10 +129,6 @@ class WelcomeFragment : Fragment() {
                         urls?.removeAt(index)
                         data?.remove(vin)
                         queries?.removeAt(index)
-
-                        viewModel.searchHistory.postValue(data)
-                        viewModel.imageURLList.postValue(urls)
-                        viewModel.queryOrder.postValue(queries)
                     }
 
                 }
@@ -147,21 +138,40 @@ class WelcomeFragment : Fragment() {
         recyclerView.adapter = recyclerAdapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        val observer = Observer<List<String>> {
-            recyclerAdapter.dataListKeys = it
-            recyclerAdapter.dataList = viewModel.searchHistory.value
-            recyclerAdapter.urlList = viewModel.imageURLList.value
-            recyclerAdapter.notifyDataSetChanged()
-        }
+        val viewObserver = view.viewTreeObserver
+        viewObserver.addOnGlobalLayoutListener (object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-        viewModel.queryOrder.observe(viewLifecycleOwner, observer)
-        viewModel.imageURLList.observe(viewLifecycleOwner, {
-            if (recyclerAdapter.urlList?.size == it.size) {
-                recyclerAdapter.notifyDataSetChanged()
+                val observer = Observer<List<String>> {
+                    recyclerAdapter.urlList = viewModel.imageURLList.value
+                    recyclerAdapter.dataList = viewModel.searchHistory.value
+
+                    val diff = StringListDiffCallback(viewModel.queryOrderOld.reversed(), it.reversed())
+                    val result = DiffUtil.calculateDiff(diff)
+
+                    recyclerAdapter.dataListKeys = it
+                    result.dispatchUpdatesTo(recyclerAdapter)
+
+                    if(viewModel.queryOrderOld.size != it.size)
+                        viewModel.queryOrderOld = it.toList()
+                }
+
+                viewModel.queryOrder.observe(viewLifecycleOwner, observer)
+                viewModel.loadedIndex.observe(viewLifecycleOwner, {
+                    if (it >= 0 && recyclerAdapter.itemCount > 0)
+                        recyclerAdapter.notifyItemChanged(recyclerAdapter.itemCount - it - 1)
+                    else recyclerAdapter.notifyDataSetChanged()
+                })
             }
         })
 
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.queryOrder.removeObservers(viewLifecycleOwner)
     }
 
 }
