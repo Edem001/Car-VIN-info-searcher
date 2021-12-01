@@ -107,7 +107,5 @@ class SearchFragment(val callback: SearchCallback) : Fragment() {
         super.onDestroyView()
         (activity as MainActivity).showNavigation()
         view?.findViewById<LottieAnimationView>(R.id.lottie_search)?.cancelAnimation()
-
-
     }
 }

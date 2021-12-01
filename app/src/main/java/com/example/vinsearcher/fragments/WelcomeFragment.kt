@@ -1,5 +1,6 @@
 package com.example.vinsearcher.fragments
 
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -25,6 +26,9 @@ import com.example.vinsearcher.room.CarDatabase
 import com.example.vinsearcher.util.StringListDiffCallback
 import com.example.vinsearcher.viewmodels.MainActivityViewModel
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,6 +52,7 @@ class WelcomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_welcome, container, false)
+        (activity as MainActivity).simpleShowNavigation()
 
         val toolBar = view.findViewById<MaterialToolbar>(R.id.main_toolbar)
         val recyclerView = view.findViewById<RecyclerView>(R.id.main_recycler)
@@ -101,11 +106,17 @@ class WelcomeFragment : Fragment() {
                             android.R.anim.fade_in,
                             R.anim.slide_out
                         )
+
+                        val bundle = Bundle().apply {
+                            putString("image", imageURL)
+                            putString("car", Gson().toJson(vehicleModel))
+                        }
                         replace(
                             R.id.main_fragment_container,
-                            CarInfoFragment(vehicleModel, imageURL)
+                            CarInfoFragment::class.java,
+                            bundle
                         )
-                        (activity as MainActivity).simpleHideNavigation()
+
                         addToBackStack("main")
                     }
                 }
@@ -164,14 +175,11 @@ class WelcomeFragment : Fragment() {
             else recyclerAdapter.notifyDataSetChanged()
         })
 
-
-
         return view
     }
 
     override fun onDestroyView() {
+        (activity as MainActivity).simpleHideNavigation()
         super.onDestroyView()
-        viewModel.queryOrder.removeObservers(viewLifecycleOwner)
     }
-
 }

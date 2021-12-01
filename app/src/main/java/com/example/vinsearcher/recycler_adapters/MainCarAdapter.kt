@@ -4,17 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.view.postOnAnimationDelayed
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vinsearcher.R
 import com.example.vinsearcher.network.models.VehicleModel
-import com.example.vinsearcher.util.StringListDiffCallback
 import com.example.vinsearcher.util.gone
 import com.example.vinsearcher.util.visible
 
