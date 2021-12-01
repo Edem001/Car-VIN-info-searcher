@@ -83,10 +83,9 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         })
 
-        if (supportFragmentManager.fragments[0] is WelcomeFragment){
+        if (supportFragmentManager.fragments[0] is WelcomeFragment) {
             simpleShowNavigation()
-        }
-        else{
+        } else {
             bottomAppBar.gone()
             fab.gone()
         }
@@ -125,13 +124,13 @@ class MainActivity : AppCompatActivity() {
                 bottomAppBar.performHide()
                 fab.visibility = View.GONE
                 supportFragmentManager.commit {
-                    replace(R.id.main_fragment_container, SearchFragment(
-                        object : SearchFragment.SearchCallback {
+                    replace(R.id.main_fragment_container, SearchFragment().apply {
+                        setCallbackInterface(object : SearchFragment.SearchCallback {
                             override fun searchQuery(query: String) {
                                 viewModel.query(query)
                             }
-                        }
-                    ))
+                        })
+                    })
                     addToBackStack("welcome")
                 }
                 window.statusBarColor = statusBarColor
