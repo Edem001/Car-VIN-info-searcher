@@ -27,7 +27,7 @@ import androidx.core.content.ContextCompat.getSystemService
 
 
 
-class SearchFragment(val callback: SearchCallback) : Fragment() {
+class SearchFragment() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +35,12 @@ class SearchFragment(val callback: SearchCallback) : Fragment() {
 
     interface SearchCallback {
         fun searchQuery(query: String)
+    }
+
+    var callback: SearchCallback? = null
+
+    fun setCallbackInterface(callback: SearchCallback){
+        this.callback = callback
     }
 
     override fun onCreateView(
@@ -97,7 +103,7 @@ class SearchFragment(val callback: SearchCallback) : Fragment() {
         val fragmentManager = parentFragmentManager
 
         if (editText.text.toString().isNotEmpty()) {
-            callback.searchQuery(editText.text.toString())
+            callback?.searchQuery(editText.text.toString().filterNot { it.isWhitespace() })
             fragmentManager.popBackStack()
         }
 
@@ -107,7 +113,5 @@ class SearchFragment(val callback: SearchCallback) : Fragment() {
         super.onDestroyView()
         (activity as MainActivity).showNavigation()
         view?.findViewById<LottieAnimationView>(R.id.lottie_search)?.cancelAnimation()
-
-
     }
 }

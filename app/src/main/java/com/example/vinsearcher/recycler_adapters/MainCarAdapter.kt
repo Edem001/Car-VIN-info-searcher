@@ -4,11 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.view.postOnAnimationDelayed
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vinsearcher.R
 import com.example.vinsearcher.network.models.VehicleModel
@@ -16,7 +14,7 @@ import com.example.vinsearcher.util.gone
 import com.example.vinsearcher.util.visible
 
 class MainCarAdapter(
-    context: Context,
+    val context: Context,
     var dataListKeys: List<String>,
     var dataList: HashMap<String, VehicleModel>?,
     var urlList: List<Pair<String?, Boolean>>?,
@@ -26,11 +24,12 @@ class MainCarAdapter(
         val title = view.findViewById<TextView>(R.id.main_recycler_car_item_header)
         val content = view.findViewById<TextView>(R.id.main_recycler_car_item_content)
         val progress = view.findViewById<ProgressBar>(R.id.main_recycler_progress)
-        val successImage = view.findViewById<ImageView>(R.id.main_recycler_iv_success)
+        val deleteButton = view.findViewById<Button>(R.id.main_recycler_car_item_delete_button)
     }
 
     interface ItemClickCallback {
         fun getItem(vehicleModel: VehicleModel?, imageURL: String?)
+        fun onDeleteItem(vehicleModel: VehicleModel?, index: Int)
     }
 
     val layoutInflater = LayoutInflater.from(context)
@@ -62,6 +61,13 @@ class MainCarAdapter(
                     false -> "https://http.cat/102"
                     null -> "https://http.cat/404"
                 }
+            )
+        }
+
+        holder.deleteButton.setOnClickListener {
+            itemClickCallback.onDeleteItem(
+                dataList?.get(dataListKeys[size - position - 1]),
+                size - position - 1
             )
         }
     }

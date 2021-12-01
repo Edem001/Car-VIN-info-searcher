@@ -3,13 +3,14 @@ package com.example.vinsearcher
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Application
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.core.animation.addListener
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import com.example.vinsearcher.di.DaggerAppComponent
@@ -24,13 +25,24 @@ import javax.inject.Named
 import android.util.TypedValue
 import android.widget.Toast
 import androidx.annotation.ColorInt
-import kotlinx.coroutines.runBlocking
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.findFragment
+import com.example.vinsearcher.fragments.WelcomeFragment
+import com.example.vinsearcher.room.CarDatabase
+import com.example.vinsearcher.util.gone
+import com.example.vinsearcher.util.visible
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModel: MainActivityViewModel
+
+    @Inject
+    lateinit var room: CarDatabase
 
     @Inject
     @Named("Car info")
@@ -40,6 +52,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         (application as MyApplication).appComponent.inject(this)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                viewModel.parseRoomList(room.carDAO().loadAllEntries())
+            } catch (e: Exception) {
+                Log.e("Database", e.message.toString())
+                e.printStackTrace()
+            }
+        }
 
         val duplicateFab = findViewById<FloatingActionButton>(R.id.main_button_search_duplicate)
         val fab = findViewById<FloatingActionButton>(R.id.main_button_search)
@@ -61,6 +82,14 @@ class MainActivity : AppCompatActivity() {
 
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         })
+
+        if (supportFragmentManager.fragments[0] is WelcomeFragment) {
+            simpleShowNavigation()
+        } else {
+            bottomAppBar.gone()
+            fab.gone()
+        }
+
     }
 
     fun hideNavigation() {
@@ -82,7 +111,6 @@ class MainActivity : AppCompatActivity() {
         val scaleAnimationWidth =
             ObjectAnimator.ofFloat(duplicateFab, "scaleX", 0f, diff.toFloat())
 
-
         val animation = AnimatorSet().apply {
             duration =
                 resources.getInteger(R.integer.material_motion_duration_medium_1).toLong()
@@ -96,13 +124,13 @@ class MainActivity : AppCompatActivity() {
                 bottomAppBar.performHide()
                 fab.visibility = View.GONE
                 supportFragmentManager.commit {
-                    replace(R.id.main_fragment_container, SearchFragment(
-                        object : SearchFragment.SearchCallback {
+                    replace(R.id.main_fragment_container, SearchFragment().apply {
+                        setCallbackInterface(object : SearchFragment.SearchCallback {
                             override fun searchQuery(query: String) {
                                 viewModel.query(query)
                             }
-                        }
-                    ))
+                        })
+                    })
                     addToBackStack("welcome")
                 }
                 window.statusBarColor = statusBarColor
@@ -116,8 +144,11 @@ class MainActivity : AppCompatActivity() {
         findViewById<BottomAppBar>(R.id.app_bottom_bar).apply {
             performHide()
             hideOnScroll = false
+
         }
-        findViewById<FloatingActionButton>(R.id.main_button_search).hide()
+        findViewById<FloatingActionButton>(R.id.main_button_search).apply {
+            hide()
+        }
 
     }
 
@@ -163,14 +194,28 @@ class MainActivity : AppCompatActivity() {
     fun simpleShowNavigation() {
         findViewById<FloatingActionButton>(R.id.main_button_search).show()
         findViewById<BottomAppBar>(R.id.app_bottom_bar).apply {
+            visible()
             performShow()
             hideOnScroll = true
+
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        val carDao = room.carDAO()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                carDao.clearTable()
+                carDao.insertAllEntries(viewModel.toRoomList())
+            } catch (e: Exception) {
+                Log.e("Database", e.message.toString())
+                e.printStackTrace()
+            }
+        }
     }
+
 }
 
 class MyApplication : Application() {

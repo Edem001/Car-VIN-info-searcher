@@ -25,6 +25,7 @@ import com.example.vinsearcher.util.CarInfoUnit
 import com.example.vinsearcher.util.gone
 import com.example.vinsearcher.util.visible
 import com.google.android.material.appbar.AppBarLayout
+import com.google.gson.Gson
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +36,10 @@ import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
-class CarInfoFragment(val vehicleModel: VehicleModel?, val carImageURL: String?) : Fragment() {
+class CarInfoFragment : Fragment() {
+
+    var vehicleModel: VehicleModel? = null
+    var carImageURL: String? = null
 
     @Named("Image search")
     @Inject
@@ -43,6 +47,9 @@ class CarInfoFragment(val vehicleModel: VehicleModel?, val carImageURL: String?)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        vehicleModel =
+            Gson().fromJson(requireArguments().getString("car"), VehicleModel::class.java)
+        carImageURL = requireArguments().getString("image")
 
         (activity?.application as MyApplication).appComponent.inject(this)
     }
@@ -64,8 +71,8 @@ class CarInfoFragment(val vehicleModel: VehicleModel?, val carImageURL: String?)
             gone()
             val make = vehicleModel?.results?.find { it.variable == "Make" }?.value
             val model = vehicleModel?.results?.find { it.variable == "Model" }?.value
-            if(!(make == null || model == null))
-            title = "$make $model"
+            if (!(make == null || model == null))
+                title = "$make $model"
         }
 
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, LinearLayout.VERTICAL)
@@ -73,13 +80,13 @@ class CarInfoFragment(val vehicleModel: VehicleModel?, val carImageURL: String?)
         CoroutineScope(Dispatchers.IO).launch {
 
             val hashMap = HashMap<String, CarInfoUnit>()
-            if (vehicleModel != null && vehicleModel.isValid()) {
+            if (vehicleModel != null && vehicleModel!!.isValid()) {
                 setImageHolder(
                     carImage,
                     carImageURL ?: "https://http.cat/404"
                 )
 
-                vehicleModel.results.filter { it.isNotEmpty() }.forEach {
+                vehicleModel!!.results.filter { it.isNotEmpty() }.forEach {
                     hashMap.apply {
                         put(it.variable!!, CarInfoUnit(it.variable, it.value!!))
                     }
@@ -110,7 +117,7 @@ class CarInfoFragment(val vehicleModel: VehicleModel?, val carImageURL: String?)
     }
 
 
-    suspend fun setImageHolder(imageHolder: ImageView, url: String) {
+    private suspend fun setImageHolder(imageHolder: ImageView, url: String) {
         withContext(Dispatchers.Main) {
             val imageLoadingCallback = object : Callback {
                 override fun onSuccess() {
@@ -128,11 +135,5 @@ class CarInfoFragment(val vehicleModel: VehicleModel?, val carImageURL: String?)
                 .error(R.drawable.ic_like_filled)
                 .into(imageHolder, imageLoadingCallback)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-
-        (activity as MainActivity).simpleShowNavigation()
     }
 }
