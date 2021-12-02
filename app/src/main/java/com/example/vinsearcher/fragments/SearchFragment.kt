@@ -1,11 +1,7 @@
 package com.example.vinsearcher.fragments
 
 import android.content.Context
-import android.hardware.input.InputManager
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,23 +11,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.commit
+import androidx.fragment.app.Fragment
 import com.airbnb.lottie.LottieAnimationView
 import com.example.vinsearcher.MainActivity
 import com.example.vinsearcher.R
 import com.example.vinsearcher.util.repeatWhileActive
 import kotlinx.coroutines.*
-import androidx.core.content.ContextCompat.getSystemService
-
-
 
 
 class SearchFragment() : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     interface SearchCallback {
         fun searchQuery(query: String)

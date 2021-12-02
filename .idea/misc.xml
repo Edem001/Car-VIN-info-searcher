@@ -3,12 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.21770833333333334" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/accent_button_background.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/accent_edittext_background.xml" value="0.75" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/color_secondary_variant_darkened_rounded.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/color_secondary_variant_rounded.xml" value="0.22135416666666666" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.34074074074074073" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_baseline_delete_outline_24.xml" value="0.3828125" />
+        <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_launcher_background.xml" value="0.21770833333333334" />
+        <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_launcher_icon.xml" value="0.21770833333333334" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_like.xml" value="0.3828125" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_like_filled.xml" value="0.3828125" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/drawable/ic_search.xml" value="0.3828125" />
@@ -25,6 +29,8 @@
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/layout/main_recycler_car_item.xml" value="0.5" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/layout/menu_item_action_layout.xml" value="0.2957427536231884" />
         <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/menu/main_toolbar_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22135416666666666" />
+        <entry key="..\:/Users/eatamuratov/AndroidStudioProjects/VINSearcher/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.22135416666666666" />
       </map>
     </option>
   </component>

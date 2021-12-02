@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:id="@+id/main_layout">
+    android:id="@+id/main_layout"
+    android:background="?colorBackground">
 
 
 
@@ -20,7 +21,6 @@
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
             app:layout_insetEdge="top"
-            app:menu="@menu/main_toolbar_menu"
 
             app:title="@string/app_name" />
 

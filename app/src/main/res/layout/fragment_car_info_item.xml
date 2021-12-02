@@ -7,7 +7,7 @@
     android:transitionName="@string/main_to_info_transition"
     android:background="@drawable/surface_pad"
     android:layout_margin="5dp"
-    android:elevation="8dp"
+    android:elevation="1dp"
     android:clipToPadding="false"
     android:clipChildren="false">
 
