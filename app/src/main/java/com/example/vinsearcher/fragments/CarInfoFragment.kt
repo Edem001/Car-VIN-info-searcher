@@ -1,10 +1,6 @@
 package com.example.vinsearcher.fragments
 
-import android.graphics.Color
-import android.media.Image
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +9,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.example.vinsearcher.MainActivity
 import com.example.vinsearcher.MyApplication
 import com.example.vinsearcher.R
 import com.example.vinsearcher.network.CarImage
@@ -32,7 +28,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -71,8 +66,8 @@ class CarInfoFragment : Fragment() {
             gone()
             val make = vehicleModel?.results?.find { it.variable == "Make" }?.value
             val model = vehicleModel?.results?.find { it.variable == "Model" }?.value
-            if (!(make == null || model == null))
-                title = "$make $model"
+            if (!(make == null && model == null))
+                title = "${make.let { make } ?: ""} ${model.let { model } ?: ""}"
         }
 
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, LinearLayout.VERTICAL)
@@ -131,8 +126,8 @@ class CarInfoFragment : Fragment() {
 
             Picasso.get()
                 .load(url)
-                .placeholder(R.drawable.ic_launcher_background)
-                .error(R.drawable.ic_like_filled)
+                .placeholder(R.drawable.surface_pad)
+                .error(R.drawable.ic_baseline_error_24)
                 .into(imageHolder, imageLoadingCallback)
         }
     }

@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.lang.Exception
 import javax.inject.Inject
 
 class MainActivityViewModel @Inject constructor(
@@ -73,7 +72,6 @@ class MainActivityViewModel @Inject constructor(
     val queryOrder = MutableLiveData<ArrayList<String>>()
     val errorObservable = MutableLiveData(0)
 
-    val likedButtonState = MutableLiveData(false)
     var queryOrderOld: List<String> = ArrayList()
     var loadedIndex = MutableLiveData<Int>()
 

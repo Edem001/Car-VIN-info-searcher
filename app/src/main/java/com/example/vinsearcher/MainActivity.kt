@@ -3,37 +3,32 @@ package com.example.vinsearcher
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Application
-import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.Toast
+import androidx.annotation.ColorInt
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commit
 import com.example.vinsearcher.di.DaggerAppComponent
 import com.example.vinsearcher.fragments.SearchFragment
-import com.example.vinsearcher.network.CarInfoModule
-import com.example.vinsearcher.viewmodels.MainActivityViewModel
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import javax.inject.Inject
-import javax.inject.Named
-
-import android.util.TypedValue
-import android.widget.Toast
-import androidx.annotation.ColorInt
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.findFragment
 import com.example.vinsearcher.fragments.WelcomeFragment
+import com.example.vinsearcher.network.CarInfoModule
 import com.example.vinsearcher.room.CarDatabase
 import com.example.vinsearcher.util.gone
 import com.example.vinsearcher.util.visible
+import com.example.vinsearcher.viewmodels.MainActivityViewModel
+import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Named
 
 
 class MainActivity : AppCompatActivity() {
