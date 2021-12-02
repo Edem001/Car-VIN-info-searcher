@@ -1,21 +1,15 @@
 package com.example.vinsearcher.recycler_adapters
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vinsearcher.R
 import com.example.vinsearcher.util.CarInfoUnit
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import java.lang.Exception
 import java.util.*
 
 class CarInfoStaggeredRecyclerAdapter(

@@ -1,6 +1,5 @@
 package com.example.vinsearcher.network
 
-import com.example.vinsearcher.network.models.ImageSearcherModule
 import com.example.vinsearcher.network.models.VehicleModel
 import retrofit2.http.GET
 import retrofit2.http.Path
